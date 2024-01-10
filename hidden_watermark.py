@@ -3,6 +3,7 @@ import os
 
 
 def lsb1_stegano(image_path, message):
+	#Retirer IMREAD
 	image_array = cv2.imread(image_path)
 	#rendre l'image paire
 	image_array = image_array - image_array%2
@@ -25,6 +26,7 @@ def lsb1_stegano(image_path, message):
 					break
 
 	cv2.imwrite("../watermarked_image.png", image_array)
+	##cv2.imshow("aladin", image_array%2*255) pour voir si l'image a été stéganographié
 
 
 def lsb1_extract_message(watermarked_image_path):
@@ -41,20 +43,21 @@ def lsb1_extract_message(watermarked_image_path):
 
 				binary_message_list.append(str(binary_array_message[index_row, index_col, index_canal]))
 
-
+#On élimine les cases listes
 	for index_binary_char in range(0, nb_rows*nb_cols*nb_canals, 8) :
 		if binary_message_list[index_binary_char: index_binary_char+8] == ["0"] * 8 :
 			binary_message_list = binary_message_list[ : index_binary_char]
 			break
 	
+#Ici on joint tous les caractères de la liste
 
 	binary_message = "".join(binary_message_list)
-
+#Conversion en chaîne de caractère
 	message = "".join([chr(int(binary_message[i:i+8], 2)) for i in range(0, len(binary_message), 8)])
 
 	print(message)
 
 
 if __name__ == "__main__":
-	lsb1_stegano("../aladin.jpg", "Coucou les loulous")
+	lsb1_stegano("../roi_lion.jpg", "Coucou les loulous")
 	lsb1_extract_message("../watermarked_image.png")
